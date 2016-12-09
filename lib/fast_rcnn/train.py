@@ -56,23 +56,31 @@ class SolverWrapper(object):
         """Take a snapshot of the network after unnormalizing the learned
         bounding-box regression weights. This enables easy use at test-time.
         """
+        # **********************************************************************************
+        # CORRECTION (Hugues THOMAS 17/06/2016)
+
+        # Put here the new name of your bbox_pred layer (originally it was 'bbox_pred')
+        my_bbox_pred = 'bbox_pred_in64' #bbox_pred
+
+        # **********************************************************************************
+    
         net = self.solver.net
 
         scale_bbox_params = (cfg.TRAIN.BBOX_REG and
                              cfg.TRAIN.BBOX_NORMALIZE_TARGETS and
-                             net.params.has_key('bbox_pred'))
+                             net.params.has_key(my_bbox_pred))
 
         if scale_bbox_params:
             # save original values
-            orig_0 = net.params['bbox_pred'][0].data.copy()
-            orig_1 = net.params['bbox_pred'][1].data.copy()
+            orig_0 = net.params[my_bbox_pred][0].data.copy()
+            orig_1 = net.params[my_bbox_pred][1].data.copy()
 
             # scale and shift with bbox reg unnormalization; then save snapshot
-            net.params['bbox_pred'][0].data[...] = \
-                    (net.params['bbox_pred'][0].data *
+            net.params[my_bbox_pred][0].data[...] = \
+                    (net.params[my_bbox_pred][0].data *
                      self.bbox_stds[:, np.newaxis])
-            net.params['bbox_pred'][1].data[...] = \
-                    (net.params['bbox_pred'][1].data *
+            net.params[my_bbox_pred][1].data[...] = \
+                    (net.params[my_bbox_pred][1].data *
                      self.bbox_stds + self.bbox_means)
 
         infix = ('_' + cfg.TRAIN.SNAPSHOT_INFIX
@@ -86,8 +94,8 @@ class SolverWrapper(object):
 
         if scale_bbox_params:
             # restore net to original state
-            net.params['bbox_pred'][0].data[...] = orig_0
-            net.params['bbox_pred'][1].data[...] = orig_1
+            net.params[my_bbox_pred][0].data[...] = orig_0
+            net.params[my_bbox_pred][1].data[...] = orig_1
         return filename
 
     def train_model(self, max_iters):
