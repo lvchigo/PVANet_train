@@ -6291,7 +6291,7 @@ layer {
     base_size: 16
     feat_stride: 16
     pre_nms_topn: 12000
-    post_nms_topn: 2000
+    post_nms_topn: 200
     nms_thresh: 0.7
     min_size: 16
   }

@@ -1565,8 +1565,8 @@ layer {
     scale: 3 scale: 6 scale: 9 scale: 16 scale: 32
     base_size: 16
     feat_stride: 16
-    pre_nms_topn: 12000
-    post_nms_topn: 2000
+    pre_nms_topn: 6000
+    post_nms_topn: 200
     nms_thresh: 0.7
     min_size: 16
   }
